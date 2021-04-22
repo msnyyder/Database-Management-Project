@@ -26,7 +26,11 @@ public class DBClassProject {
         String author_query = "";
         String customer_query = "UPDATE Customer SET Address = ?,  City = ?, State = ?, Zip = ? WHERE LastName = ?";
         String author_report = "";
-        String book_report = "";
+        String book_report = "SELECT S.BookID, B.Title, SUM(S.Quantity) AS Quantity, SUM(S.UnitPrice * S.Quantity) AS TotalSales " +
+                             "FROM Sale S " +
+                             "INNER JOIN Book AS B ON B.ID = S.BookID " +
+                             "GROUP BY S.BookID " +
+                             "ORDER BY BookID ASC";
 
         int user_choice = 1;
         main_loop: while (user_choice != 0) {
@@ -71,7 +75,11 @@ public class DBClassProject {
 
                         break;
                     case 4:
-
+                        ResultSet rset = stmt.executeQuery(book_report);
+                        while (rset.next ()) {
+                           System.out.println (rset.getString ("BookID")+  "  " +
+				                  rset.getString("Title")+ " " + rset.getInt("Quantity")+ " " + rset.getFloat("TotalSales"));
+                        }
                         break;
                 }
 
