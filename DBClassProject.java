@@ -102,7 +102,7 @@ public class DBClassProject {
 			int authorBookCount = 0;
 			String author_book_count_query = "SELECT * FROM BookAuthor WHERE AuthorID=?";
 			PreparedStatement pstmt = conn.prepareStatement(author_book_count_query);
-			pstmt.setInt(1, rSet.getInt);
+			pstmt.setInt(1, rSet.getInt());
 			ResultSet rs=pstmt.executeQuery();
 			if (rs.next()) {
 				authorBookCount++;
