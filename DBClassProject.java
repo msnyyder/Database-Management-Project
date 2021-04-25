@@ -23,9 +23,9 @@ public class DBClassProject {
 
         Statement stmt = conn.createStatement();
         // create queries to make the statement calls easier
-        String author_query = "";
+        String author_update_query = "UPDATE AUTHOR SET ID=?, FirstName=?, LastName=?, BirthDate=?";
         String customer_query = "UPDATE Customer SET Address = ?,  City = ?, State = ?, Zip = ? WHERE LastName = ?";
-        String author_report = "";
+        String author_report = "SELECT * FROM Author";
         String book_report = "SELECT S.BookID, B.Title, SUM(S.Quantity) AS Quantity, SUM(S.UnitPrice * S.Quantity) AS TotalSales " +
                              "FROM Sale S " +
                              "INNER JOIN Book AS B ON B.ID = S.BookID " +
@@ -42,7 +42,29 @@ public class DBClassProject {
                     case 0:
                         break main_loop;
                     case 1:
+			
+			stmt.executeQuery("SELECT ID from Author ORDER BY ID DESC LIMIT 1");
+		
+				/*gather input from user*/
+				int author_ID = stmt.getInt();
 
+				System.out.println("Enter Author's first name");
+				String author_first_name = stdin.next();
+
+				System.out.println("Enter Author's last name");
+				String author_last_name = stdin.next();
+
+				System.out.println("Enter Author's birthday dd/mm/yy (Enter 'null' if birthday unknown)");
+				String author_birth_date = stdin.next();
+
+				/*execute update*/
+				 PreparedStatement pstmt = conn.prepareStatement(author_update_query);
+				pstmt.setInt(1, author_ID+1);
+				pstmt.setString(2, author_first_name);
+				pstmt.setString(3, author_last_name);
+				pstmt.setString(4, author_birth_date);
+		
+			
                         break;
                     case 2:
                         System.out.println("Enter the customer's last name: ");
@@ -72,6 +94,27 @@ public class DBClassProject {
                         System.out.println("Update complete.");
                         break;
                     case 3:
+			
+			/*execute author display*/
+		ResultSet rSet = stmt.executeQuery(author_report);
+		while (rSet.next()){	
+			/*retrieve author book count within author display query*/
+			int authorBookCount = 0;
+			String author_book_count_query = "SELECT * FROM BookAuthor WHERE AuthorID=?";
+			PreparedStatement pstmt = conn.prepareStatement(author_book_count_query);
+			pstmt.setInt(1, rSet.getInt);
+			ResultSet rs=pstmt.executeQuery();
+			if (rs.next()) {
+				authorBookCount++;
+			}
+			/*display author list*/
+			System.out.println(rSet.getInt("ID")+" "+rSet.getString()+" "+rSet.getString()+" "
+					+rSet.getString("Birth Date")+" "
+					+"Author Book Count:"+" "+ authorBookCount);
+			
+		}
+				
+				
 
                         break;
                     case 4:
