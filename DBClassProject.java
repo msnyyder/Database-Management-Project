@@ -5,7 +5,9 @@ import java.util.*;
 public class DBClassProject {
     public static void main(String[] args) throws SQLException {
         // create a scanner to take in user input
-        Scanner stdin = new Scanner(System.in);
+        int author_ID = 8;
+	    
+	Scanner stdin = new Scanner(System.in);
 
         //record user input for username
         System.out.println("Enter a username: ");
@@ -49,7 +51,7 @@ public class DBClassProject {
 			stmt.executeQuery("SELECT ID from Author ORDER BY ID DESC LIMIT 1");
 		
 				/*gather input from user*/
-				int author_ID = stmt.getInt();
+				
 
 				System.out.println("Enter Author's first name");
 				String author_first_name = stdin.next();
@@ -66,6 +68,7 @@ public class DBClassProject {
 				pstmt.setString(2, author_first_name);
 				pstmt.setString(3, author_last_name);
 				pstmt.setString(4, author_birth_date);
+				author_ID=author_ID+1;
 		
 			
                         break;
