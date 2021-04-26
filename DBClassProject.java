@@ -39,8 +39,8 @@ public class DBClassProject {
 
         int user_choice = 1;
         main_loop: while (user_choice != 0) {
-                System.out.println("To add a new author, enter 1. To update customer address, press 2. " +
-                        "To print author report, press 3. To print book report, press 4. To exit, press 0.");
+                System.out.println("To add a new author, enter 1.\n To update customer address, press 2.\n " +
+                        "To print author report, press 3.\n To print book report, press 4. To exit, press 0.");
 
                 user_choice = stdin.nextInt();
                 switch(user_choice) {
