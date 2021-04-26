@@ -19,13 +19,16 @@ public class DBClassProject {
         String url = "jdbc:mysql://localhost/zion";
         // open the connection to the database whose url is above
         // hard-coded login info to make it easier to access
-        Connection conn = DriverManager.getConnection(url, username, "");
+        Connection conn = DriverManager.getConnection(url, username, password);
 
         Statement stmt = conn.createStatement();
-        // create queries to make the statement calls easier
+        // update author information
         String author_update_query = "UPDATE AUTHOR SET ID=?, FirstName=?, LastName=?, BirthDate=?";
+	// update customer information
         String customer_query = "UPDATE Customer SET Address = ?,  City = ?, State = ?, Zip = ? WHERE LastName = ?";
+	// select information from author table
         String author_report = "SELECT * FROM Author";
+	//select information from book table
         String book_report = "SELECT S.BookID, B.Title, SUM(S.Quantity) AS Quantity, SUM(S.UnitPrice * S.Quantity) AS TotalSales " +
                              "FROM Sale S " +
                              "INNER JOIN Book AS B ON B.ID = S.BookID " +
@@ -67,6 +70,7 @@ public class DBClassProject {
 			
                         break;
                     case 2:
+			// retrieve information from user
                         System.out.println("Enter the customer's last name: ");
                         String last_name = stdin.next();
 
@@ -83,6 +87,7 @@ public class DBClassProject {
                         System.out.println("Enter the ZIP code: ");
                         int zip_code = stdin.nextInt();
 
+			// set variable parts of prepared query
                         PreparedStatement pstmt = conn.prepareStatement(customer_query);
                         pstmt.setString(1, street_address);
                         pstmt.setString(2, city);
