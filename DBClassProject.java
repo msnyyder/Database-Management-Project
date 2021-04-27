@@ -5,7 +5,7 @@ import java.util.*;
 public class DBClassProject {
     public static void main(String[] args) throws SQLException {
         // create a scanner to take in user input
-        int author_ID = 8;
+        
 	    
 	Scanner stdin = new Scanner(System.in);
 
@@ -25,7 +25,7 @@ public class DBClassProject {
 
         Statement stmt = conn.createStatement();
         // update author information
-        String author_update_query = "UPDATE AUTHOR SET ID=?, FirstName=?, LastName=?, BirthDate=?";
+        String author_update_query = "INSERT INTO Author (ID, FirstName, LastName, BirthDate) VALUES (?,?,?,?)";
 	// update customer information
         String customer_query = "UPDATE Customer SET Address = ?,  City = ?, State = ?, Zip = ? WHERE LastName = ?";
 	// select information from author table
@@ -39,16 +39,20 @@ public class DBClassProject {
 
         int user_choice = 1;
         main_loop: while (user_choice != 0) {
-                System.out.println("To add a new author, enter 1.\n To update customer address, press 2.\n " +
-                        "To print author report, press 3.\n To print book report, press 4. To exit, press 0.");
+                System.out.println("To add a new author, enter 1.\nTo update customer address, press 2.\n" +
+                        "To print author report, press 3.\nTo print book report, press 4. To exit, press 0.");
 
                 user_choice = stdin.nextInt();
                 switch(user_choice) {
                     case 0:
                         break main_loop;
                     case 1:
-			
-			stmt.executeQuery("SELECT ID from Author ORDER BY ID DESC LIMIT 1");
+				
+				/*get author id*/        
+			   	ResultSet most_recent_author = stmt.executeQuery("SELECT ID from Author ORDER BY ID DESC LIMIT 1");
+				most_recent_author.next();
+				int author_ID = most_recent_author.getInt("ID");
+				author_ID++;
 		
 				/*gather input from user*/
 				
@@ -59,17 +63,19 @@ public class DBClassProject {
 				System.out.println("Enter Author's last name");
 				String author_last_name = stdin.next();
 
-				System.out.println("Enter Author's birthday dd/mm/yy (Enter 'null' if birthday unknown)");
+				System.out.println("Enter Author's birthday yyyy-mm-dd (Enter 'null' if birthday unknown)");
 				String author_birth_date = stdin.next();
+				java.sql.Date date = java.sql.Date.valueOf(author_birth_date);
 
 				/*execute update*/
-				 PreparedStatement pstmt = conn.prepareStatement(author_update_query);
-				pstmt.setInt(1, author_ID+1);
-				pstmt.setString(2, author_first_name);
-				pstmt.setString(3, author_last_name);
-				pstmt.setString(4, author_birth_date);
-				author_ID=author_ID+1;
-		
+				PreparedStatement pstm = conn.prepareStatement(author_update_query);
+				pstm.setInt(1, author_ID++);
+				pstm.setString(2, author_first_name);
+				pstm.setString(3, author_last_name);
+				pstm.setDate(4, date);
+				
+				pstm.executeUpdate();
+						
 			
                         break;
                     case 2:
@@ -109,19 +115,18 @@ public class DBClassProject {
 			/*retrieve author book count within author display query*/
 			int authorBookCount = 0;
 			String author_book_count_query = "SELECT * FROM BookAuthor WHERE AuthorID=?";
-			PreparedStatement pstmt = conn.prepareStatement(author_book_count_query);
-			pstmt.setInt(1, rSet.getInt());
-			ResultSet rs=pstmt.executeQuery();
+			PreparedStatement pst = conn.prepareStatement(author_book_count_query);
+			pst.setInt(1, rSet.getInt("ID"));
+			ResultSet rs=pst.executeQuery();
 			if (rs.next()) {
 				authorBookCount++;
 			}
 			/*display author list*/
-			System.out.println(rSet.getInt("ID")+" "+rSet.getString()+" "+rSet.getString()+" "
-					+rSet.getString("Birth Date")+" "
+			System.out.println(rSet.getInt("ID")+" "+rSet.getString("FirstName")+" "+rSet.getString("LastName")+" "
 					+"Author Book Count:"+" "+ authorBookCount);
 			
 		}
-				
+			System.out.println();	
 				
 
                         break;
@@ -131,6 +136,7 @@ public class DBClassProject {
                            System.out.println (rset.getString ("BookID")+  "  " +
 				                  rset.getString("Title")+ " " + rset.getInt("Quantity")+ " " + rset.getFloat("TotalSales"));
                         }
+				System.out.println();
                         break;
                 }
 
