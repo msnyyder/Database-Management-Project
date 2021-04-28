@@ -24,6 +24,25 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `Login`
+--
+
+CREATE TABLE `Login` (
+  `UserName` varchar(30) NOT NULL,
+  `Password` varchar(30) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `Login`
+--
+
+INSERT INTO `Login` (`UserName`, `Password`) VALUES
+('admin', 'PassWord'),
+('Jake01', '1234');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `Author`
 --
 
