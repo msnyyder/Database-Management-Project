@@ -9,21 +9,39 @@ public class DBClassProject {
 	    
 	Scanner stdin = new Scanner(System.in);
 
-        //record user input for username
-        System.out.println("Enter a username: ");
-        String username = stdin.next();
-
-        // record user input for password
-        System.out.println("Enter a password: ");
-        String password = stdin.next();
-
         // connection saved as string
         String url = "jdbc:mysql://localhost/zion";
         // open the connection to the database whose url is above
         // hard-coded login info to make it easier to access
-        Connection conn = DriverManager.getConnection(url, username, password);
+        Connection conn = DriverManager.getConnection(url, "root", "");
+	    
+	Statement stmt = conn.createStatement();
+	    
+	System.out.println("Enter username: ");
+        String username = stdin.next();
+        
+        System.out.println("Enter password: ");
+        String password = stdin.next();
+        
+        /*get set of users*/
+        ResultSet users = stmt.executeQuery("SELECT UserName, Password FROM login");
+        boolean login = false;
+        
+        /*check if username and password are in the login table*/
+        login_loop: while(users.next()) {
+         if(users.getString("UserName").equals(username) && users.getString("Password").equals(password)) {
+             System.out.println("Login successful");
+             login = true;
+             break login_loop;
+         } else {
+             continue;
+           }
+        }
+        if(login == false) {
+         System.out.println("Login failed");
+         System.exit(0);
+        }
 
-        Statement stmt = conn.createStatement();
         // update author information
         String author_update_query = "INSERT INTO Author (ID, FirstName, LastName, BirthDate) VALUES (?,?,?,?)";
 	// update customer information
